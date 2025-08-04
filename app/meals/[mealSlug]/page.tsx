@@ -1,10 +1,44 @@
-import Link from "next/link";
+import Image from "next/image";
+import { notFound } from "next/navigation";
 
-export default function MealPage(){
-  return (
-    <main>
-      <h1>Single Meal Page</h1>
-      <p><Link href="/">Back to home</Link></p>
-    </main>
-  )
+import classes from "./page.module.css";
+import { getMeal } from "@/repo/meals";
+
+type MealPageProps = {
+  params: {
+    mealSlug: string;
+  };
 };
+
+export default function MealPage({ params }: MealPageProps) {
+  const meal = getMeal(params.mealSlug);
+
+  if(!meal){
+    notFound(); //akan cari the closest not found page
+  }
+
+  return (
+    <>
+      <header className={classes.header}>
+        <div className={classes.image}>
+          <Image src={meal.image} alt={meal.title} fill />
+        </div>
+        <div className={classes.headerText}>
+          <h1>{meal.title}</h1>
+          <p className={classes.creator}>
+            by <a href={`mailto:${meal.creator_email}`}>{meal.creator}</a>
+          </p>
+          <p className={classes.summary}>{meal.summary}</p>
+        </div>
+      </header>
+      <main>
+        <p
+          className={classes.instructions}
+          dangerouslySetInnerHTML={{
+            __html: meal.instructions.replace(/\n/g, "<br />"),
+          }}
+        ></p>
+      </main>
+    </>
+  );
+}
