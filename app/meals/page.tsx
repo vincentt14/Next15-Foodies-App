@@ -1,6 +1,14 @@
 import Link from "next/link";
+import { Suspense } from "react"; // Suspense is used to handle async data fetching in React until the data is loaded
+
 import classes from "./page.module.css";
 import MealsGrid from "@/components/meals/meals-grid";
+import { getMeals } from "@/repo/meals";
+
+async function Meals() {
+  const meals = await getMeals();
+  return <MealsGrid meals={meals} />;
+}
 
 export default function MealsPage() {
   return (
@@ -15,7 +23,9 @@ export default function MealsPage() {
         </p>
       </header>
       <main className={classes.main}>
-        <MealsGrid meals={[]} />
+        <Suspense fallback={<p className={classes.loading}>Fetching Meals...</p>}>
+          <Meals />
+        </Suspense>
       </main>
     </>
   );

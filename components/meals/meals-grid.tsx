@@ -1,6 +1,6 @@
 import MealItem from './meal-item';
 import classes from './meals-grid.module.css'
-import type { Meal } from '@/types/meal';
+import type { Meal } from '@/types/Meal';
 
 type MealsGridProps = {
   meals: Meal[]
