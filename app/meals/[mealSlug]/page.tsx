@@ -5,16 +5,29 @@ import classes from "./page.module.css";
 import { getMeal } from "@/repo/meals";
 
 type MealPageProps = {
-  params: {
-    mealSlug: string;
-  };
+  params: Promise<{ mealSlug: string }>;
 };
 
-export default function MealPage({ params }: MealPageProps) {
-  const meal = getMeal(params.mealSlug);
+export async function generateMetadata({ params }: MealPageProps) {
+  const { mealSlug } = await params;
+  const meal = getMeal(mealSlug);
 
-  if(!meal){
+  if (!meal) {
     notFound(); //akan cari the closest not found page
+  }
+
+  return {
+    title: meal.title,
+    description: meal.summary,
+  };
+}
+
+export default async function MealPage({ params }: MealPageProps) {
+  const { mealSlug } = await params;
+  const meal = getMeal(mealSlug);
+
+  if (!meal) {
+    notFound();
   }
 
   return (
